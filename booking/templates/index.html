@@ -1,0 +1,85 @@
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Booking System</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+        h1, h3 {
+            color: #343a40;
+        }
+        .lead {
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center w-100" style="margin-top: 5px;">
+        <div class="card text-center w-100">
+            <div class="card-body">
+                {% if messages %}
+                    <div class="alert alert-info" role="alert">
+                        {% for message in messages %}
+                            {{ message }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <h1 class="card-title">Bus Booking System</h1>
+                {% if user.is_authenticated %}
+                    <p class="lead">Welcome, <strong>{{ user.first_name }}</strong>!</p>
+                    <a href="{% url 'browse_buses' %}" class="btn btn-custom btn-lg mb-3">Browse For Buses</a>
+                    <form method="POST" action="/logout">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-lg">Logout</button>
+                    </form>
+                    
+                    <h3 class="mt-4">Your Bookings</h3>
+                    {% if user_bookings %}
+                        <ul class="list-group mb-3">
+                            {% for booking in user_bookings %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        Seat: {{ booking.seat.seat_number }} on {{ booking.seat.bus.route.source }} to {{ booking.seat.bus.route.destination }}<br>
+                                        Bus: {{ booking.seat.bus.name }}<br>
+                                        Booking Time: {{ booking.booking_time|date:"D, d M Y H:i" }}
+                                    </div>
+                                    <form method="POST" action="{% url 'cancel_booking' booking.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm">Cancel Booking</button>
+                                    </form>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No bookings found.</p>
+                    {% endif %}
+                    
+                {% else %}
+                    <a href="{% provider_login_url 'google' %}" class="btn btn-custom btn-lg">Login with Google</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

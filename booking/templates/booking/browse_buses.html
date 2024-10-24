@@ -1,0 +1,65 @@
+{% extends 'booking/base.html' %}
+
+{% block title %}Browse Available Buses{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4 display-4 font-weight-bold">Available Buses</h1>
+
+    <div class="text-center mb-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-success shadow-sm">Go to Home</a>
+    </div>
+    
+    <form method="GET" class="mb-4 p-3 bg-light shadow-sm rounded-lg">
+        <div class="form-row align-items-end">
+            <div class="col">
+                <label for="source" class="font-weight-bold">Source</label>
+                <select name="source" id="source" class="form-control rounded-pill" required>
+                    <option value="">Select Source</option>
+                    {% for source in sources %}
+                        <option value="{{ source }}" {% if request.GET.source == source %}selected{% endif %}>{{ source }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col">
+                <label for="destination" class="font-weight-bold">Destination</label>
+                <select name="destination" id="destination" class="form-control rounded-pill" required>
+                    <option value="">Select Destination</option>
+                    {% for destination in destinations %}
+                        <option value="{{ destination }}" {% if request.GET.destination == destination %}selected{% endif %}>{{ destination }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary btn-block rounded-pill shadow-sm">Search</button>
+            </div>
+        </div>
+    </form>
+
+    {% if buses %}
+        <div class="row">
+            {% for bus in buses %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-lg shadow">
+                        <div class="card-header bg-info text-white rounded-top">
+                            <h5 class="mb-0">{{ bus.name }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Seats Available:</strong> {{ bus.available_seats }}</p>
+                            <p><strong>Route:</strong> {{ bus.route.source }} to {{ bus.route.destination }}</p>
+                            <p><strong>Total Seats:</strong> {{ bus.total_seats }}</p>
+                            <p><strong>Days of Operation:</strong> {{ bus.days_of_operation }}</p>
+                            <a href="{% url 'check_seat_availability' bus.id %}" class="btn btn-success btn-block shadow">Check Seats</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning text-center" role="alert">
+            No buses found for the selected route.
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

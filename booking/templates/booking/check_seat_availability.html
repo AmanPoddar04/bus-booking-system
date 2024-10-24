@@ -1,0 +1,140 @@
+{% extends "booking/base.html" %}
+{% load static %}
+
+{% block content %}
+<h2 class="text-center mb-4">Available Seats for {{ bus.name }}</h2>
+
+<div class="text-center mb-4">
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary rounded-pill shadow-sm">Go Back to Home</a>
+</div>
+
+<div class="container">
+    <!-- Bus Layout with Occupancy Indicator -->
+    <div class="bus-status mb-4 text-center">
+        {% if bus.occupancy_percentage <= 60 %}
+            <span class="badge badge-success">Ample Availability ({{ bus.occupancy_percentage }}% Full)</span>
+        {% elif bus.occupancy_percentage > 60 and bus.occupancy_percentage <= 90 %}
+            <span class="badge badge-warning">Seats Filling Fast ({{ bus.occupancy_percentage }}% Full)</span>
+        {% else %}
+            <span class="badge badge-danger">Limited Availability ({{ bus.occupancy_percentage }}% Full)</span>
+        {% endif %}
+    </div>
+
+    <!-- Seat Layout in Bus Formation with Aisle -->
+    <div class="bus-layout p-4 bg-light border rounded">
+        <div class="row justify-content-center mb-3">
+            <div class="col-auto">
+                <div class="driver-seat text-center mb-2">Driver</div>
+            </div>
+        </div>
+
+        <!-- Aisle Layout: Three columns on both sides -->
+        <div class="row mb-3">
+            <div class="col-5">
+                <div class="row">
+                    {% for seat in seats|slice:":{{ seats|length // 2 }}" %}
+                    <div class="col-4 mb-2 text-center">
+                        <div class="seat 
+                            {% if seat.is_booked %} booked {% elif bus.occupancy_percentage <= 60 %} available-green 
+                            {% elif bus.occupancy_percentage > 60 and bus.occupancy_percentage <= 90 %} available-yellow 
+                            {% else %} available-red {% endif %} 
+                            p-2 border rounded">
+                            {% if seat.is_booked %}
+                                <span class="text-white">Booked</span>
+                            {% else %}
+                                <span>Seat {{ seat.number }}</span>
+                                <a href="{% url 'book_seat' seat.id %}" class="btn btn-primary btn-sm mt-2">Book</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Empty space for aisle -->
+            <div class="col-1"></div>
+
+            <div class="col-5">
+                <div class="row">
+                    {% for seat in seats|slice:"{{ seats|length // 2 }}:" %} <!-- Assuming remaining seats on the right side -->
+                    <div class="col-4 mb-2 text-center">
+                        <div class="seat 
+                            {% if seat.is_booked %} booked {% elif bus.occupancy_percentage <= 60 %} available-green 
+                            {% elif bus.occupancy_percentage > 60 and bus.occupancy_percentage <= 90 %} available-yellow 
+                            {% else %} available-red {% endif %} 
+                            p-2 border rounded">
+                            {% if seat.is_booked %}
+                                <span class="text-white">Booked</span>
+                            {% else %}
+                                <span>Seat {{ seat.number }}</span>
+                                <a href="{% url 'book_seat' seat.id %}" class="btn btn-primary btn-sm mt-2">Book</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'browse_buses' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bus-layout {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .driver-seat {
+        background-color: gray;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    /* Seat styles */
+    .seat {
+        height: 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .available-green {
+        background-color: green;
+        color: white;
+    }
+
+    .available-green:hover {
+        background-color: lightgreen;
+    }
+
+    .available-yellow {
+        background-color: yellow;
+    }
+
+    .available-yellow:hover {
+        background-color: lightyellow;
+    }
+
+    .available-red {
+        background-color: red;
+        color: white;
+    }
+
+    .available-red:hover {
+        background-color: lightcoral;
+    }
+
+    .booked {
+        background-color: darkred;
+        color: white;
+    }
+</style>
+
+{% endblock %}

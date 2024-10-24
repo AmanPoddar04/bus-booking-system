@@ -1,0 +1,25 @@
+{% extends "booking/base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Book Seat {{ seat.id }}</h2>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <form method="POST" class="mt-4">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.as_p }}
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success btn-lg">Confirm Booking</button>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{% url 'browse_buses' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
