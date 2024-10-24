@@ -45,6 +45,7 @@ def check_seat_availability(request, bus_id):
 def book_seat(request, seat_id):
     seat = get_object_or_404(Seat, id=seat_id, is_booked=False)
     bus = seat.bus  # Get the bus associated with the seat
+    user = request.user
 
     if request.method == "POST":
         form = BookingForm(request.POST)
