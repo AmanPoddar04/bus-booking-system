@@ -1,6 +1,6 @@
 # Django Bus Booking System
 
-A Django-based bus booking system that allows users to browse and book bus tickets, view schedules, and manage bookings. The admin panel provides functionality to manage buses, routes, schedules, and users. The complete project documentation is available in the PDF file included in this repository. You can find it [Bus_Booking_System.pdf]
+A Django-based bus booking system that allows users to browse and book bus tickets, view schedules, and manage bookings. The admin panel provides functionality to manage buses, routes, schedules, and users. The complete project documentation is available in the PDF file included in this repository. You can find it [here](Bus_Booking_System.pdf)
 
 ## Features
 
